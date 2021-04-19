@@ -80,6 +80,18 @@ http.createServer(async (req, res) => {
           res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
           return res.end('ok');
         });
+      } else if(req.url.startsWith('/pages/')){
+        const key = req.url.split('/')[2];
+        let body = '';
+        req.on('data',(data)=>{
+          body +=data;
+        });
+        return req.on('end', ()=>{
+          console.log('PUT 본문(Body):', body);
+          post[key] = JSON.parse(body).text;
+          res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+          return res.end('ok');
+        })
       }
     } else if (req.method === 'DELETE') {
       if (req.url.startsWith('/user/')) {
